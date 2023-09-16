@@ -1,19 +1,39 @@
-#!/usr/bin/node
-import requests
-import sys
+const request = require('request');
 
-def get_movie_characters(movie_id):
-    url = f"https://swapi-api.alx-tools.com/api/films/{movie_id}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        characters = response.json()["characters"]
-        for character_url in characters:
-            character = requests.get(character_url).json()
-            print(character["name"])
-    else:
-        print(f"No movie found with ID {movie_id}")
+if (process.argv.length !== 3) {
+  console.error('Usage: node 5-starwars_characters.js <Movie ID>');
+  process.exit(1);
+}
 
-if __name__ == "__main__":
-    movie_id = sys.argv[1]
-    get_movie_characters(movie_id)
+const movieId = process.argv[2];
+const apiUrl = `https://swapi-api.alx-tools.com/api/films/${movieId}`;
 
+request.get(apiUrl, (error, response, body) => {
+  if (error) {
+    console.error('Error:', error.message);
+  } else if (response.statusCode !== 200) {
+    console.error('Error:', `HTTP Status Code: ${response.statusCode}`);
+  } else {
+    try {
+      const movieData = JSON.parse(body);
+      const characters = movieData.characters;
+
+      // Function to fetch and display character names
+      function fetchCharacterName(url) {
+        request.get(url, (error, response, body) => {
+          if (!error && response.statusCode === 200) {
+            const characterData = JSON.parse(body);
+            console.log(characterData.name);
+          }
+        });
+      }
+
+      // Fetch and display character names one by one
+      characters.forEach((characterUrl) => {
+        fetchCharacterName(characterUrl);
+      });
+    } catch (parseError) {
+      console.error('Error:', 'Failed to parse response data');
+    }
+  }
+});
