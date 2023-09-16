@@ -1,20 +1,19 @@
 #!/usr/bin/node
-const request = require('request');
-const url = 'https://swapi.co/api/films/' + process.argv[2];
-request(url, function (error, response, body) {
-  if (!error) {
-    let characters = JSON.parse(body).characters;
-    printCharacters(characters, 0);
-  }
-});
+import requests
+import sys
 
-function printCharacters (characters, index) {
-  request(characters[index], function (error, response, body) {
-    if (!error) {
-      console.log(JSON.parse(body).name);
-      if (index + 1 < characters.length) {
-        printCharacters(characters, index + 1);
-      }
-    }
-  });
-}
+def get_movie_characters(movie_id):
+    url = f"https://swapi-api.alx-tools.com/api/films/{movie_id}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        characters = response.json()["characters"]
+        for character_url in characters:
+            character = requests.get(character_url).json()
+            print(character["name"])
+    else:
+        print(f"No movie found with ID {movie_id}")
+
+if __name__ == "__main__":
+    movie_id = sys.argv[1]
+    get_movie_characters(movie_id)
+
