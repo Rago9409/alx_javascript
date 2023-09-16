@@ -1,19 +1,24 @@
-#!/usr/bin/node
-import requests
-import sys
+const request = require('request');
 
-def get_movie_title(movie_id):
-    url = f"https://swapi-api.alx-tools.com/api/films/{movie_id}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()["title"]
-    else:
-        return None
+if (process.argv.length !== 3) {
+  console.error('Usage: node 1-starwars_title.js <movie ID>');
+  process.exit(1);
+}
 
-if __name__ == "__main__":
-    movie_id = sys.argv[1]
-    title = get_movie_title(movie_id)
-    if title is None:
-        print(f"No movie found with ID {movie_id}")
-    else:
-        print(title)
+const movieId = process.argv[2];
+const apiUrl = `https://swapi-api.alx-tools.com/api/films/${movieId}`;
+
+request.get(apiUrl, (error, response, body) => {
+  if (error) {
+    console.error('Error:', error.message);
+  } else if (response.statusCode !== 200) {
+    console.error('Error:', `HTTP Status Code: ${response.statusCode}`);
+  } else {
+    try {
+      const movieData = JSON.parse(body);
+      console.log(movieData.title);
+    } catch (parseError) {
+      console.error('Error:', 'Failed to parse response data');
+    }
+  }
+});
