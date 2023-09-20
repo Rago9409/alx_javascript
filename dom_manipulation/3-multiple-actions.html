@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Creating and Removing Elements</title>
+</head>
+<body>
+  <div id="container"></div>
+
+  <script>
+    // Write JavaScript code to select the container element using its id and store it in a variable.
+    const containerElement = document.getElementById("container");
+
+    // Use the DOM API to create a new <p> element, and add "New paragraph" as its content.
+    const paragraphElement = document.createElement("p");
+    paragraphElement.textContent = "New paragraph";
+
+    // Append the newly created elements to the container element.
+    containerElement.appendChild(paragraphElement);
+
+    // Add a button that removes/hides the newly created paragraph when clicked and shows it when clicked again.
+    const buttonElement = document.createElement("button");
+    buttonElement.textContent = "Toggle Paragraph";
+    buttonElement.addEventListener("click", () => {
+      if (paragraphElement.style.display === "none") {
+        paragraphElement.style.display = "block";
+      } else {
+        paragraphElement.style.display = "none";
+      }
+    });
+
+    // Append the button to the container element.
+    containerElement.appendChild(buttonElement);
+  </script>
+</body>
+</html>
